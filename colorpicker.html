@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        label,
+        samp {
+            margin: 0;
+
+        }
+
+        #rgb_content {
+            width: calc(100% - 10rem);
+            height: 30vh;
+            margin: auto;
+        }
+        #colmax{
+            font-size: 3rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: inherit;
+        }
+        #colmax:hover{
+            text-shadow: 10px 10px 15px black;
+        }
+        
+    </style>
+    </head>
+
+    <body class="bg-dark">
+        <div class="container h-100">
+            <div class="card text-center h-100">
+                <div class="card-header h1 bg-info">
+                    ColorPicker
+                </div>
+                <div class="card-body h-auto">
+                    <div class="container h-auto">
+                        <div id="rgb_content">
+                            <span id="colmax" onclick="copyText(this)"></span>
+                        </div>
+                    </div>
+                    <div class="container h-50">
+                        <div class="row h3 d-flex align-items-center h-100
+                            mt-3">
+                            <div class="col-12">
+                                <button class="btn btn-danger" id="plus"
+                                    onmousedown="plus_sub_rand('add')"
+                                    onmouseup="stop(time)"> + </button>
+                                <button class="btn btn-danger" id="subtract"
+                                    onmousedown="plus_sub_rand('sub')"
+                                    onmouseup="stop(time)"> - </button>
+                                <button class="btn btn-danger" id="rand"
+                                    onmousedown="plus_sub_rand('rand')"
+                                    onmouseup="stop(time)"> ? </button>
+
+                            </div>
+                            <div class="col-12 mt-3">
+                                <label for="R" class="text-danger">R</label>
+                                <input type="range" class="custom-range w-auto"
+                                    id="R" min="0" max="255">
+                                <samp id="R_value"></samp>
+                                <button type="button" class="btn
+                                    btn-outline-danger"
+                                    onclick="input_col('R')">Change R</button>
+                                <hr class="dropdown-divider">
+                            </div>
+                            <div class="col-12">
+                                <label for="G" class="text-success">G</label>
+                                <input type="range" class="custom-range w-auto"
+                                    id="G" min="0" max="255">
+                                <samp id="G_value"></samp>
+                                <button type="button" class="btn
+                                    btn-outline-success"
+                                    onclick="input_col('G')">Change G</button>
+                                <hr class="dropdown-divider">
+                            </div>
+                            <div class="col-12">
+                                <label for="B" class="text-primary">B</label>
+                                <input type="range" class="custom-range w-auto"
+                                    id="B" min="0" max="255">
+                                <samp id="B_value"></samp>
+                                <button type="button" class="btn
+                                    btn-outline-primary"
+                                    onclick="input_col('B')">Change B</button>
+                                <hr class="dropdown-divider">
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="card-footer h-10 bg-info">
+                    reirajiang © 2019
+                </div>
+                <script src="js/jquery-3.4.1.min.js"></script>
+                <script src="js/popper.min.js"></script>
+                <script src="js/bootstrap.js"></script>
+                <script>
+                var col_r = Math.floor(Math.random(0, 255) * 256);
+                var col_g = Math.floor(Math.random(0, 255) * 256);
+                var col_b = Math.floor(Math.random(0, 255) * 256);
+                var zone = document.getElementById("rgb_content");
+                var r = document.getElementById("R");
+                var g = document.getElementById("G");
+                var b = document.getElementById("B");
+                var r_value = document.getElementById("R_value");
+                var g_value = document.getElementById("G_value");
+                var b_value = document.getElementById("B_value");
+                var hex = document.getElementById("colmax");
+                var plus = document.getElementById("plus");
+                var subtract = document.getElementById("subtract");
+                var rand = document.getElementById("rand");
+
+
+                bg_rgb();
+
+                r.addEventListener("change", function () {
+                    col_r = r.value;
+                    bg_rgb();
+                })
+
+                g.addEventListener("change", function () {
+                    col_g = g.value;
+                    bg_rgb();
+                })
+                b.addEventListener("change", function () {
+                    col_b = b.value;
+                    bg_rgb();
+                })
+
+                function copyText(element) {
+                    var range, selection, worked;
+                    var txt=hex.textContent;
+                    if (document.body.createTextRange) {
+                        range = document.body.createTextRange();
+                        range.moveToElementText(element);
+                        range.select();
+                    } else if (window.getSelection) {
+                        selection = window.getSelection();        
+                        range = document.createRange();
+                        range.selectNodeContents(element);
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                    } 
+                    try {
+                        document.execCommand('copy');
+                        alert(`${txt}已複製`);
+                    }
+                    catch (err) {
+                        alert('unable to copy text');
+                    }
+                }
+                
+                function bg_rgb() {
+                    zone.setAttribute("style", "background:rgb(" + col_r + "," + col_g + "," + col_b + ")");
+                    r.setAttribute("value", col_r);
+                    r_value.textContent = chg3txt(col_r);
+                    g.setAttribute("value", col_g);
+                    g_value.textContent = chg3txt(col_g);
+                    b.setAttribute("value", col_b);
+                    b_value.textContent = chg3txt(col_b);
+                    hex.textContent = `#${chghex(col_r)}${chghex(col_g)}${chghex(col_b)}`;
+                    hex.setAttribute("style", "color:hsl(" + txt_color(col_r, col_g, col_b)['h'] + "," + txt_color(col_r, col_g, col_b)['s'] + "%," + txt_color(col_r, col_g, col_b)['l'] + "%)");
+                }
+
+                function chghex(col) {
+                    //var newcol=col.toString(16).toUpperCase(); //字串轉16進位 然後再轉換大寫
+                    var newcol = parseInt(col, 10).toString(16).toUpperCase();
+                    return (newcol.length < 2) ? "0" + newcol : newcol;
+
+                }
+                function chg3txt(num) {
+                    var numlength = num.toString(10);
+                    if (numlength.length == 3) {
+                        return numlength;
+                    }else if(numlength.length == 2){
+                        return '0' + numlength;
+                    }else
+                        return '00' + numlength;
+                }
+                function plus_sub_rand(func) {
+                    time = setInterval(function () {
+                        var psr_r = r_value.textContent;
+                        var psr_g = g_value.textContent;
+                        var psr_b = b_value.textContent;
+                        switch (func) {
+                            case 'add':
+                                if (psr_r == 255) {
+                                    col_r = 255;
+                                    r.value = 255;
+                                } else {
+                                    col_r = (psr_r - 0) + 1;
+                                    r.value = (psr_r - 0) + 1;
+                                };
+                                if (psr_g == 255) {
+                                    col_g = 255;
+                                    g.value = 255;
+                                } else {
+                                    col_g = (psr_g - 0) + 1;
+                                    g.value = (psr_g - 0) + 1;
+                                };
+                                if (psr_b == 255) {
+                                    col_b = 255;
+                                    b.value = 255;
+                                } else {
+                                    col_b = (psr_b - 0) + 1;
+                                    b.value = (psr_b - 0) + 1;
+                                };
+                                bg_rgb();
+                                zone.style.background = `rgb(${col_r},${col_g},${col_b})`;
+                                break;
+                            case 'sub':
+                                if (psr_r == 0) {
+                                    col_r = 0;
+                                    r.value = 0;
+                                } else {
+                                    col_r = (psr_r - 0) - 1;
+                                    r.value = (psr_r - 0) - 1;
+                                };
+                                if (psr_g == 0) {
+                                    col_g = 0;
+                                    g.value = 0;
+                                } else {
+                                    col_g = (psr_g - 0) - 1;
+                                    g.value = (psr_g - 0) - 1;
+                                };
+                                if (psr_b == 0) {
+                                    col_b = 0;
+                                    b.value = 0;
+                                } else {
+                                    col_b = (psr_b - 0) - 1;
+                                    b.value = (psr_b - 0) - 1;
+                                };
+                                bg_rgb();
+                                zone.style.background = `rgb(${col_r},${col_g},${col_b})`;
+                                break;
+                            case 'rand':
+                                var newcol_r = Math.floor(Math.random(0, 255) * 256);
+                                var newcol_g = Math.floor(Math.random(0, 255) * 256);
+                                var newcol_b = Math.floor(Math.random(0, 255) * 256);
+                                col_r = newcol_r;
+                                col_g = newcol_g;
+                                col_b = newcol_b;
+                                r.value = newcol_r;
+                                g.value = newcol_g;
+                                b.value = newcol_b;
+                                bg_rgb();
+                                break;
+                        }
+                    }, 40)
+
+                }
+                function stop(id) {
+                    clearInterval(id);
+                }
+                function txt_color(col_r, col_g, col_b) {
+                    var hsl = [];
+                    var H, S, L;
+                    var r = col_r / 255;
+                    var g = col_g / 255;
+                    var b = col_b / 255;
+                    var vmin = (r < ((g < b) ? g : b)) ? r : ((g < b) ? g : b);
+                    var vmax = (r > ((g > b) ? g : b)) ? r : ((g > b) ? g : b);
+                    var del = vmax - vmin;
+                    var L = (vmax + vmin) / 2;
+                    if (del == 0) {
+                        H = 0;
+                        S = 0;
+                    } else {
+                        if (L < 0.5) {
+                            S = del / (2 * L)
+                        } else {
+                            S = del / (2 - 2 * L)
+                        }
+                        dr = (((vmax - r) / 6) + (del / 2)) / del;
+                        dg = (((vmax - g) / 6) + (del / 2)) / del;
+                        db = (((vmax - b) / 6) + (del / 2)) / del;
+
+                        if (r == vmax) {
+                            H = db - dg;
+                        } else if (g == vmax) {
+                            H = (1 / 3) + dr - db;
+                        } else if (b == vmax) {
+                            H = (2 / 3) + dg - dr;
+                        }
+                        if (H < 0) H += 1;
+                        if (H > 1) H -= 1;
+                    }
+                    hsl.h = Math.round(H * 240);
+                    hsl.s = Math.round(S * 240);
+                    hsl.l = Math.round(L * 240);
+                    return hsl;
+                }
+                function rgbtohsl(r, g, b) {  //rgb轉hsl
+                    r = r / 255;
+                    g = g / 255;
+                    b = b / 255;
+
+                    var min = Math.min(r, g, b);
+                    var max = Math.max(r, g, b);
+                    var l = (min + max) / 2;
+                    var difference = max - min;
+                    var h, s, l;
+                    if (max == min) {
+                        h = 0, s = 0;
+                    } else {
+                        s = l > 0.5 ? difference / (2.0 - max - min) : difference / (max + min);
+                        switch (max) {
+                            case r: h = (g - b) / difference + (g < b ? 6 : 0); break;
+                            case g: h = 2.0 + (b - r) / difference; break;
+                            case b: h = 4.0 + (r - g) / difference; break;
+                        }
+                        h = Math.round(h * 60);
+                    }
+                    s = Math.round(s * 100);//转换成百分比的形式
+                    l = Math.round(l * 100);
+                    return [h, s, l];
+                }
+                function input_col(col) {
+                switch (col) {
+                case 'R':
+                    var ipt_r = window.prompt('請輸入0-255,為R的數值');
+                    if (ipt_r > 256 || ipt_r =="" || ipt_r == null) {
+                        window.alert('請輸入介於0-255正確數值');
+                        input_col('R');
+                    }else if(typeof(ipt_r)!='undefined' && ipt_r != null && ipt_r < 256){
+                        col_r=ipt_r;
+                        r.value=ipt_r;
+                        bg_rgb();
+                    }
+                    else{
+                        window.alert('字元輸入錯誤!請輸入0-255數值');
+                        input_col('R');
+                    }
+                break;
+                case 'G':
+                    var ipt_g = window.prompt('請輸入0-255,為G的數值');
+                    if (ipt_g > 256 || ipt_g =="" || ipt_g == null) {
+                        window.alert('請輸入介於0-255正確數值');
+                        input_col('G');
+                    } else if (typeof(ipt_g)!='undefined' && ipt_g != null && ipt_g < 256) {
+                        col_g=ipt_g;
+                        g.value=ipt_g;
+                        bg_rgb();
+                    } else{
+                        window.alert('字元輸入錯誤!請輸入0-255數值');
+                        input_col('G');
+                    }
+                break;
+                case 'B':
+                    var ipt_b = window.prompt('請輸入0-255,為B的數值');
+                    if (ipt_b > 256 || ipt_b =="" || ipt_b == null) {
+                        window.alert('請輸入介於0-255正確數值');
+                        input_col('B');
+                    } else if (typeof(ipt_b)!='undefined' && ipt_b != null && ipt_b < 256) {
+                        col_b=ipt_b;
+                        b.value=ipt_b;
+                        bg_rgb();
+                    }else{
+                        window.alert('字元輸入錯誤!請輸入0-255數值');
+                        input_col('B');
+                    }
+                break;
+            }
+        }
+
+            </script>
+            </body>
+
+        </html>
